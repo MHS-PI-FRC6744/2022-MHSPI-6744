@@ -19,7 +19,7 @@ public class Robot extends TimedRobot {
   private static final String kCustomAuto = "My Auto";
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
-// Mrs.Meier is my fav teacher
+// Mrs.Meier is my fav teacher, because robotics is fun
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.

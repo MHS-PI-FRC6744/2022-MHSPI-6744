@@ -4,7 +4,12 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -13,13 +18,38 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
  * the package after creating this project, you must also update the build.gradle file in the
  * project.
+ * @param <WPI_VictorSPX>
  */
-public class Robot extends TimedRobot {
+public class Robot<WPI_VictorSPX> extends TimedRobot {
   private static final String kDefaultAuto = "Default";
   private static final String kCustomAuto = "My Auto";
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
-// Mrs.Meier is my fav teacher, because robotics is fun
+// Right Motors
+private final WPI_VictorSPX rightMotor1 = new WPI_VictorSPX(0);
+private final WPI_VictorSPX rightMotor2 = new WPI_VictorSPX(1);
+
+// Parentheses contain the PWM port
+
+//Left Motors
+private final WPI_VictorSPX leftMotor1 = new WPI_VictorSPX(3);
+private final WPI_VictorSPX leftMotor2 = new WPI_VictorSPX(4);
+
+//Right Motors speed controller
+private final MotorControllerGroup rightSpeedGroup = new MotorControllerGroup(rightMotor1, rightMotor2);
+
+//Left Motors speed controller 
+private final MotorControllerGroup leftSpeedGroup = new MotorControllerGroup (leftMotor1, leftMotor2);
+
+//drivetrain
+DifferentialDrive drivetrain = new DifferentialDrive(rightSpeedGroup, leftSpeedGroup);
+
+// Joysticks
+Joystick stick = new Joystick(0);
+
+
+// Joystick USB has to be plugged into the USB port 0 on the laptop
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -30,6 +60,8 @@ public class Robot extends TimedRobot {
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
   }
+
+
 
   /**
    * This function is called every robot packet, no matter the mode. Use this for items like
@@ -78,7 +110,11 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+
+drivetrain.arcadeDrive(stick.getY(), stick.getZ());
+    
+  }
 
   /** This function is called once when the robot is disabled. */
   @Override

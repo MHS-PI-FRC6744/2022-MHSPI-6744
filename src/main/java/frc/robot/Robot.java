@@ -13,42 +13,35 @@ import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-/**
- * The VM is configured to automatically run this class, and to call the functions corresponding to
- * each mode, as described in the TimedRobot documentation. If you change the name of this class or
- * the package after creating this project, you must also update the build.gradle file in the
- * project.
- * @param <WPI_VictorSPX>
- */
-public class Robot<WPI_VictorSPX> extends TimedRobot {
+public class Robot extends TimedRobot {
   private static final String kDefaultAuto = "Default";
   private static final String kCustomAuto = "My Auto";
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
-// Right Motors
-private final WPI_VictorSPX rightMotor1 = new WPI_VictorSPX(0);
-private final WPI_VictorSPX rightMotor2 = new WPI_VictorSPX(1);
+  // Right Motors
+  private final WPI_VictorSPX rightMotor1 = new WPI_VictorSPX(0);
+  private final WPI_VictorSPX rightMotor2 = new WPI_VictorSPX(1);
 
-// Parentheses contain the PWM port
+  // Parentheses contain the CAN DeviceID
 
-//Left Motors
-private final WPI_VictorSPX leftMotor1 = new WPI_VictorSPX(3);
-private final WPI_VictorSPX leftMotor2 = new WPI_VictorSPX(4);
+  //Left Motors
+  private final WPI_VictorSPX leftMotor1 = new WPI_VictorSPX(3);
+  private final WPI_VictorSPX leftMotor2 = new WPI_VictorSPX(4);
 
-//Right Motors speed controller
-private final MotorControllerGroup rightSpeedGroup = new MotorControllerGroup(rightMotor1, rightMotor2);
+  //Right Motors speed controller
+  private final MotorControllerGroup rightSpeedGroup = new MotorControllerGroup(rightMotor1, rightMotor2);
 
-//Left Motors speed controller 
-private final MotorControllerGroup leftSpeedGroup = new MotorControllerGroup (leftMotor1, leftMotor2);
+  //Left Motors speed controller 
+  private final MotorControllerGroup leftSpeedGroup = new MotorControllerGroup (leftMotor1, leftMotor2);
 
-//drivetrain
-DifferentialDrive drivetrain = new DifferentialDrive(rightSpeedGroup, leftSpeedGroup);
+  //drivetrain
+  DifferentialDrive drivetrain = new DifferentialDrive(rightSpeedGroup, leftSpeedGroup);
 
-// Joysticks
-Joystick stick = new Joystick(0);
+  // Joysticks
+  Joystick stick = new Joystick(0);
 
 
-// Joystick USB has to be plugged into the USB port 0 on the laptop
+  // Joystick USB has to be plugged into the USB port 0 on the laptop
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -112,7 +105,7 @@ Joystick stick = new Joystick(0);
   @Override
   public void teleopPeriodic() {
 
-drivetrain.arcadeDrive(stick.getY(), stick.getZ());
+    drivetrain.arcadeDrive(stick.getY(), stick.getZ());
     
   }
 

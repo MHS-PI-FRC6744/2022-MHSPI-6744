@@ -4,10 +4,12 @@
 
 package frc.robot;
 
+
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -18,18 +20,20 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
  * the package after creating this project, you must also update the build.gradle file in the
  * project.
- * @param <WPI_VictorSPX>
+ * 
  */
-public class Robot<WPI_VictorSPX> extends TimedRobot {
+public class Robot extends TimedRobot {
   private static final String kDefaultAuto = "Default";
   private static final String kCustomAuto = "My Auto";
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
-// Right Motors
-private final WPI_VictorSPX rightMotor1 = new WPI_VictorSPX(0);
+// Right Motors-
+private final WPI_VictorSPX rightMotor1 = new WPI_VictorSPX(2);
 private final WPI_VictorSPX rightMotor2 = new WPI_VictorSPX(1);
 
 // Parentheses contain the PWM port
+//intake Motors
+private final WPI_VictorSPX intakeMotor = new WPI_VictorSPX(5);
 
 //Left Motors
 private final WPI_VictorSPX leftMotor1 = new WPI_VictorSPX(3);
@@ -38,12 +42,16 @@ private final WPI_VictorSPX leftMotor2 = new WPI_VictorSPX(4);
 //Right Motors speed controller
 private final MotorControllerGroup rightSpeedGroup = new MotorControllerGroup(rightMotor1, rightMotor2);
 
+
 //Left Motors speed controller 
 private final MotorControllerGroup leftSpeedGroup = new MotorControllerGroup (leftMotor1, leftMotor2);
 
 //drivetrain
 DifferentialDrive drivetrain = new DifferentialDrive(rightSpeedGroup, leftSpeedGroup);
 
+/**Servo Setup
+ */
+LinearServo gate = new LinearServo(1, 90, 8);
 // Joysticks
 Joystick stick = new Joystick(0);
 
@@ -54,6 +62,8 @@ Joystick stick = new Joystick(0);
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
+  // new
+  private double startTime;
   @Override
   public void robotInit() {
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
@@ -88,7 +98,10 @@ Joystick stick = new Joystick(0);
     m_autoSelected = m_chooser.getSelected();
     // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
     System.out.println("Auto selected: " + m_autoSelected);
+    
+    startTime = Timer.getFPGATimestamp();
   }
+  //end of new shit
 
   /** This function is called periodically during autonomous. */
   @Override
@@ -102,6 +115,20 @@ Joystick stick = new Joystick(0);
         // Put default auto code here
         break;
     }
+      // new shit
+      double time = Timer.getFPGATimestamp();
+
+      if (time - startTime< 3) {
+      leftMotor1.set(0.6);
+      leftMotor2.set(0.6);
+      rightMotor1.set(-0.6);
+      rightMotor2.set(-0.6);
+    } else{
+      leftMotor1.set(0);
+      leftMotor2.set(0);
+      rightMotor1.set(0);
+      rightMotor2.set(0);
+    }
   }
 
   /** This function is called once when teleop is enabled. */
@@ -112,9 +139,26 @@ Joystick stick = new Joystick(0);
   @Override
   public void teleopPeriodic() {
 
-drivetrain.arcadeDrive(stick.getY(), stick.getZ());
-    
-  }
+    drivetrain.arcadeDrive(stick.getY(), stick.getZ());
+    if(stick.getRawButton(1)){
+      gate.setPosition(50);
+    }
+    else{
+      gate.setPosition(0);
+    }
+    if(stick.getRawButton(2)){
+      intakeMotor.set( -0.5);
+
+    }else{
+      intakeMotor.set(0);
+    }
+    if(stick.getRawButton(3)){
+      intakeMotor.set( 0.5);
+    }else{
+      intakeMotor.set(0);
+    }
+    }
+
 
   /** This function is called once when the robot is disabled. */
   @Override
